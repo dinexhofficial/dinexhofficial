@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DINEXH — AI Creations</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #020408;
+    --surface: #0a0f1a;
+    --neon: #00f0ff;
+    --neon2: #bf00ff;
+    --neon3: #ff006a;
+    --text: #e8f4ff;
+    --muted: #5a7a99;
+    --card: #0d1525;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--neon);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    box-shadow: 0 0 12px var(--neon), 0 0 30px var(--neon);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,240,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s, height 0.3s;
+  }
+
+  /* Grid Background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Glow Orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 500px; height: 500px; background: var(--neon2); top: -100px; right: -100px; animation-delay: 0s; }
+  .orb2 { width: 400px; height: 400px; background: var(--neon); bottom: 10%; left: -80px; animation-delay: -4s; }
+  .orb3 { width: 300px; height: 300px; background: var(--neon3); bottom: 30%; right: 20%; animation-delay: -8s; }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(30px, 40px) scale(1.1); }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,240,255,0.08);
+    background: rgba(2,4,8,0.6);
+  }
+  .logo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 0.2em;
+    color: var(--neon);
+    text-shadow: 0 0 20px var(--neon);
+    text-decoration: none;
+  }
+  .logo span { color: var(--neon2); }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  nav ul a:hover { color: var(--neon); }
+  .nav-ig {
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.05em !important;
+    transition: opacity 0.3s !important;
+  }
+  .nav-ig:hover { opacity: 0.85; color: #fff !important; }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(0,240,255,0.25);
+    background: rgba(0,240,255,0.05);
+    color: var(--neon);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 50px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--neon);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--neon);
+    animation: pulse 1.5s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  h1 .line1 { display: block; color: var(--text); }
+  h1 .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--neon), var(--neon2), var(--neon3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
+  }
+  @keyframes shimmer { to { background-position: 200% center; } }
+
+  .hero-sub {
+    margin-top: 28px;
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-ctas {
+    margin-top: 48px;
+    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .btn-primary {
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--neon), var(--neon2));
+    color: #000;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: none;
+    transition: opacity 0.3s, transform 0.3s;
+    box-shadow: 0 0 30px rgba(0,240,255,0.3);
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+  .btn-secondary {
+    padding: 14px 36px;
+    background: transparent;
+    color: var(--neon);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid rgba(0,240,255,0.4);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: none;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .btn-secondary:hover { background: rgba(0,240,255,0.08); transform: translateY(-2px); }
+
+  .scroll-hint {
+    margin-top: 80px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--neon), transparent);
+    animation: scrollAnim 1.5s ease infinite;
+  }
+  @keyframes scrollAnim { 0%{opacity:0;transform:scaleY(0);transform-origin:top} 50%{opacity:1;transform:scaleY(1)} 100%{opacity:0;transform:scaleY(0);transform-origin:bottom} }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; gap: 0;
+    background: var(--card);
+    border-top: 1px solid rgba(0,240,255,0.08);
+    border-bottom: 1px solid rgba(0,240,255,0.08);
+    overflow: hidden;
+  }
+  .stat {
+    flex: 1; max-width: 220px;
+    padding: 32px 24px;
+    text-align: center;
+    border-right: 1px solid rgba(0,240,255,0.08);
+    position: relative;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--neon), var(--neon2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 6px; text-transform: uppercase; }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+  .section-header {
+    text-align: center;
+    padding: 80px 24px 48px;
+  }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* PORTFOLIO GRID */
+  #portfolio { padding-bottom: 80px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+    padding: 0 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid rgba(0,240,255,0.07);
+    overflow: hidden;
+    aspect-ratio: 1;
+    cursor: none;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: rgba(0,240,255,0.3); }
+  .card-inner {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    gap: 16px;
+    padding: 32px;
+    transition: transform 0.4s;
+  }
+  .card:hover .card-inner { transform: scale(1.02); }
+  .card-icon { font-size: 3rem; filter: drop-shadow(0 0 12px var(--neon)); }
+  .card-title { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--text); text-align: center; }
+  .card-desc { font-size: 0.8rem; color: var(--muted); text-align: center; line-height: 1.5; }
+  .card-tag {
+    position: absolute; top: 16px; left: 16px;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 50px;
+    border: 1px solid;
+  }
+  .tag-img { color: var(--neon); border-color: rgba(0,240,255,0.3); background: rgba(0,240,255,0.07); }
+  .tag-vid { color: var(--neon2); border-color: rgba(191,0,255,0.3); background: rgba(191,0,255,0.07); }
+  .tag-art { color: var(--neon3); border-color: rgba(255,0,106,0.3); background: rgba(255,0,106,0.07); }
+  .card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,240,255,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover .card-overlay { opacity: 1; }
+
+  /* Glow cards */
+  .card-glow1 { background: radial-gradient(ellipse at 30% 30%, rgba(0,240,255,0.06), var(--card)); }
+  .card-glow2 { background: radial-gradient(ellipse at 70% 30%, rgba(191,0,255,0.06), var(--card)); }
+  .card-glow3 { background: radial-gradient(ellipse at 50% 70%, rgba(255,0,106,0.06), var(--card)); }
+
+  /* ABOUT */
+  #about {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-ring {
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,240,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    animation: rotate 20s linear infinite;
+    position: relative;
+  }
+  .about-ring::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    border: 1px solid rgba(191,0,255,0.15);
+    animation: rotate 30s linear infinite reverse;
+  }
+  @keyframes rotate { to { transform: rotate(360deg); } }
+  .about-ring-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--neon);
+    border-radius: 50%;
+    top: -4px; left: 50%; transform: translateX(-50%);
+    box-shadow: 0 0 12px var(--neon);
+  }
+  .about-avatar {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon2), var(--neon));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    z-index: 1;
+  }
+  .about-text h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem; font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .about-text p { color: var(--muted); line-height: 1.8; margin-bottom: 16px; font-size: 0.95rem; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .about-tag {
+    padding: 6px 16px;
+    border: 1px solid rgba(0,240,255,0.2);
+    border-radius: 50px;
+    font-size: 0.72rem;
+    color: var(--neon);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SERVICES */
+  #services { padding: 0 24px 80px; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .service-card {
+    background: var(--card);
+    border: 1px solid rgba(0,240,255,0.08);
+    padding: 36px 28px;
+    border-radius: 4px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon), var(--neon2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .service-card:hover { border-color: rgba(0,240,255,0.2); transform: translateY(-4px); }
+  .service-card:hover::after { transform: scaleX(1); }
+  .service-icon { font-size: 2.2rem; margin-bottom: 20px; }
+  .service-card h3 { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .service-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+  /* CTA */
+  #cta {
+    padding: 100px 24px;
+    text-align: center;
+    background: linear-gradient(to bottom, transparent, rgba(0,240,255,0.03), transparent);
+    border-top: 1px solid rgba(0,240,255,0.06);
+    border-bottom: 1px solid rgba(0,240,255,0.06);
+  }
+  #cta h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--text), var(--neon));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+  #cta p { color: var(--muted); max-width: 500px; margin: 0 auto 48px; line-height: 1.7; }
+  .ig-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 18px 48px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: none;
+    transition: opacity 0.3s, transform 0.3s;
+    box-shadow: 0 0 40px rgba(131,58,180,0.4);
+  }
+  .ig-btn:hover { opacity: 0.88; transform: translateY(-3px); }
+  .ig-icon { font-size: 1.3rem; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    border-top: 1px solid rgba(0,240,255,0.06);
+    position: relative; z-index: 1;
+  }
+  footer a { color: var(--neon); text-decoration: none; }
+
+  @media (max-width: 700px) {
+    nav { padding: 16px 20px; }
+    nav ul { display: none; }
+    .about-inner { grid-template-columns: 1fr; }
+    .about-visual { display: none; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat { min-width: 50%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">DINE<span>XH</span></a>
+  <ul>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="https://www.instagram.com/dinexh_official" target="_blank" class="nav-ig">📸 @dinexh_official</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    AI-Powered Creative Studio
+  </div>
+  <h1>
+    <span class="line1">DINEXH</span>
+    <span class="line2">AI CREATIONS</span>
+  </h1>
+  <p class="hero-sub">Crafting the future with artificial intelligence — from hyper-realistic imagery to immersive AI art, videos, and beyond.</p>
+  <div class="hero-ctas">
+    <a href="#portfolio" class="btn-primary">View My Work</a>
+    <a href="https://www.instagram.com/dinexh_official" target="_blank" class="btn-secondary">Follow on Instagram</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">100+</div>
+    <div class="stat-label">AI Creations</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Imagination</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1</div>
+    <div class="stat-label">Artist</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Limits</div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header">
+    <div class="section-tag">// Portfolio</div>
+    <div class="section-title">Featured Creations</div>
+  </div>
+  <div class="grid">
+    <div class="card card-glow1">
+      <span class="card-tag tag-img">Image</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">🤖</div>
+        <div class="card-title">AI Portraits</div>
+        <div class="card-desc">Hyper-realistic AI-generated portraits and character art</div>
+      </div>
+    </div>
+    <div class="card card-glow2">
+      <span class="card-tag tag-vid">Video</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">🎬</div>
+        <div class="card-title">AI Videos</div>
+        <div class="card-desc">Cinematic AI-generated video sequences and animations</div>
+      </div>
+    </div>
+    <div class="card card-glow3">
+      <span class="card-tag tag-art">Art</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">🎨</div>
+        <div class="card-title">Concept Art</div>
+        <div class="card-desc">Futuristic worlds and surreal AI concept illustrations</div>
+      </div>
+    </div>
+    <div class="card card-glow2">
+      <span class="card-tag tag-img">Image</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">✨</div>
+        <div class="card-title">Fantasy Scenes</div>
+        <div class="card-desc">Dreamlike landscapes and magical environments</div>
+      </div>
+    </div>
+    <div class="card card-glow3">
+      <span class="card-tag tag-art">Art</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">🌌</div>
+        <div class="card-title">Sci-Fi Worlds</div>
+        <div class="card-desc">Futuristic cities, space stations and alien environments</div>
+      </div>
+    </div>
+    <div class="card card-glow1">
+      <span class="card-tag tag-vid">Video</span>
+      <div class="card-overlay"></div>
+      <div class="card-inner">
+        <div class="card-icon">💫</div>
+        <div class="card-title">Motion Art</div>
+        <div class="card-desc">Abstract AI motion graphics and visual experiments</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <div class="section-tag">// About</div>
+    <div class="section-title">Who is Dinexh?</div>
+  </div>
+  <div class="about-inner">
+    <div class="about-visual">
+      <div class="about-ring">
+        <div class="about-ring-dot"></div>
+        <div class="about-avatar">🤖</div>
+      </div>
+    </div>
+    <div class="about-text">
+      <h2>AI Creator<br/>& Artist</h2>
+      <p>I'm Dinexh — an AI creative pushing the boundaries of what artificial intelligence can create. I explore the intersection of technology and art to produce stunning visuals, characters, and worlds that exist nowhere else.</p>
+      <p>Every piece I create is a journey into the unknown — built with cutting-edge AI tools, refined by creative vision, and shared with a growing community of fellow AI enthusiasts.</p>
+      <div class="about-tags">
+        <span class="about-tag">Midjourney</span>
+        <span class="about-tag">Stable Diffusion</span>
+        <span class="about-tag">Runway ML</span>
+        <span class="about-tag">Sora</span>
+        <span class="about-tag">DALL·E</span>
+        <span class="about-tag">Kling AI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <div class="section-tag">// Services</div>
+    <div class="section-title">What I Create</div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🖼️</div>
+      <h3>AI Image Generation</h3>
+      <p>Custom AI-generated images for personal projects, brands, social media, and digital art collections.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🎞️</div>
+      <h3>AI Video Creation</h3>
+      <p>Short-form AI video content, animations, and visual stories for Instagram Reels and beyond.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🧠</div>
+      <h3>AI Character Design</h3>
+      <p>Unique AI characters, avatars, and personas for brands, gaming, and digital identity.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <h3>AI Art for NFT</h3>
+      <p>One-of-a-kind AI-generated artwork suitable for NFT creation and digital collectibles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2>Let's Create Together</h2>
+  <p>Follow my AI journey on Instagram for daily creations, behind-the-scenes, and drops you won't find anywhere else.</p>
+  <a href="https://www.instagram.com/dinexh_official" target="_blank" class="ig-btn">
+    <span class="ig-icon">📸</span>
+    Follow @dinexh_official
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <a href="https://www.instagram.com/dinexh_official" target="_blank">@dinexh_official</a> · Built with AI. Powered by imagination.</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.background = 'var(--neon2)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      cursor.style.background = 'var(--neon)';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .service-card, .stat').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
